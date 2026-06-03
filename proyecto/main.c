@@ -1,32 +1,35 @@
-// LIBRERIAS 
 #include <stdio.h>
 #include <stdlib.h>
+#include <conio.h>
 
-// CONSTANTES 
 #define FILAS 60
 #define COL 60
+#define VISTA_FILAS 20
+#define VISTA_COL 20
 
-//funcion para imprimir el tablero
-void imprimirTablero(int mat[FILAS][COL]){
+extern int validarMovimiento(int* mapa, int columnas, int nuevaFila, int nuevaColumna);
+
+// Función para imprimir el tablero (Ventana 20x20)
+void imprimirTablero(int mat[FILAS][COL], int jugadorFila, int jugadorColumna){
     system("cls");
+    int inicioFilas = jugadorFila - (VISTA_FILAS/2);
+    int inicioColumnas = jugadorColumna - (VISTA_COL/2);
 
-    for(int i=0; i< FILAS; i++){
-        for(int j=0; j<COL; j++){
+    if(inicioFilas < 0) inicioFilas = 0;
+    if(inicioColumnas < 0) inicioColumnas = 0;
+    if(inicioFilas > FILAS - VISTA_FILAS) inicioFilas = FILAS - VISTA_FILAS;
+    if(inicioColumnas > COL - VISTA_COL) inicioColumnas = COL - VISTA_COL;
+
+    for(int i = inicioFilas; i < inicioFilas + VISTA_FILAS; i++){
+        for(int j = inicioColumnas; j < inicioColumnas + VISTA_COL; j++){
             switch(mat[i][j]){
-                case 0: printf("P ");
-                        break;
-                case 1: printf("# ");
-                        break;
-                case 2: printf("C ");
-                        break;
-                case 3: printf("L ");
-                        break;
-                case 4: printf("/ ");
-                        break;
-                case 5: printf("S ");
-                        break;
-                case 6: printf(". ");
-                        break;
+                case 0: printf("P "); break; // Jugador
+                case 1: printf("# "); break; // Pared
+                case 2: printf("C "); break; // Moneda
+                case 3: printf("L "); break; // Llave
+                case 4: printf("/ "); break; // Puerta
+                case 5: printf("S "); break; // Salida
+                case 6: printf(". "); break; // Camino Libre
                 default: break;
             }
         }
@@ -35,15 +38,11 @@ void imprimirTablero(int mat[FILAS][COL]){
 }
 
 int main(){
-    
-    //0 = personaje
-    //1=pared
-    //2=moneda
-    //3=llave
-    //4=puertaCerrada
-    //5=salida
-    //6=caminoLibre
-    int mapa[60][60] = {
+    int posJugador_fila = 1;
+    int posJugador_columna = 1;
+    char movimiento;
+
+    int mapa[FILAS][COL] = {
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}, 
         {1,0,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,1}, 
         {1,6,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,6,1}, 
@@ -106,6 +105,28 @@ int main(){
         {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1}  
     };
 
-    imprimirTablero(mapa);
+    while(1){
+        imprimirTablero(mapa, posJugador_fila, posJugador_columna);
+        movimiento = _getch(); 
+
+        int nuevaPosFila = posJugador_fila;
+        int nuevaPosColumna = posJugador_columna;
+
+        if(movimiento == 'w' || movimiento == 'W') nuevaPosFila--;
+        else if(movimiento == 's' || movimiento == 'S') nuevaPosFila++;
+        else if(movimiento == 'a' || movimiento == 'A') nuevaPosColumna--;
+        else if(movimiento == 'd' || movimiento == 'D') nuevaPosColumna++;
+        else if(movimiento == 'q' || movimiento == 'Q') break;
+
+        int valido = validarMovimiento(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna);
+
+        if(valido){
+            mapa[posJugador_fila][posJugador_columna] = 6;
+            posJugador_fila = nuevaPosFila;
+            posJugador_columna = nuevaPosColumna;
+            mapa[posJugador_fila][posJugador_columna] = 0;
+        }
+    }
+
     return 0;
 }
