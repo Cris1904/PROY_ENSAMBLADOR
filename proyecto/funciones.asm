@@ -54,3 +54,32 @@ contarCaracteres:
 
 .fin_contar:
     ret               ; Retornamos el total 
+
+
+    global contarCeldasLibres
+    ; Función obligatoria 5: contar celdas libres
+    ; Recibe desde C:
+    ; RCX = Dirección inicial del mapa (char*)
+    ; RDX = Número total de celdas (int)
+    ; Retorna:
+    ; RAX = Cantidad de celdas libres ('.')
+
+contarCeldasLibres:
+    xor rax, rax      ; Inicializamos el contador en 0
+    xor r9, r9        ; Inicializamos el índice en 0
+
+    .cicloLibres:
+    cmp r9, rdx       ; Comparamos el índice actual con el total de celdas
+    jge .finLibres    ; Si el índice >= totalCeldas, terminamos el ciclo
+    
+    mov r10b, byte [rcx + r9] ; Leemos 1 byte (un carácter) del mapa
+    cmp r10b, 46      ; Es igual a '.'?
+    jne .siguiente_libre
+    inc rax           ; Si es igual, incrementamos nuestro contador
+
+.siguiente_libre:
+    inc r9            ; Avanzamos a la siguiente celda
+    jmp .cicloLibres  ; Repetimos el ciclo
+
+.finLibres:
+    ret               ; Retornamos el total 
