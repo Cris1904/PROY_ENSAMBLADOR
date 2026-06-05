@@ -10,6 +10,7 @@ extern int validarMovimiento(char* mapa, int columnas, int nuevaFila, int nuevaC
 extern int contarCaracteres(char* mapa, int columnas, int caracter);
 extern int contarCeldasLibres(char* mapa, int totalCeldas);
 extern int detectarObjeto(char* mapa, int columnas, int filaJugador, int columnaJugador, char objeto);
+extern int calcularPuntaje(int monedas, int pasos, int niveles);
 
 void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna){
     system("cls");
@@ -66,10 +67,13 @@ int main(){
                 posJugador_fila = nuevaPosFila;
                 posJugador_columna = nuevaPosColumna;
                 mapa[posJugador_fila][posJugador_columna] = 'P';
+
                 imprimirTablero(mapa, posJugador_fila, posJugador_columna);
-                printf("Nivel 1\n");
-                printf("Pasos: %d\n", pasos);
+                printf("Nivel 1 Completado\n");
+                printf("Pasos Realizados: %d\n", pasos);
                 printf("Monedas recogidas: %d/%d\n", monedasRecogidas, monedasTotales);
+                int puntaje = calcularPuntaje(monedasRecogidas, pasos, 1);
+                printf("Puntaje Final del Nivel: %d\n", puntaje);
                 printf("\n¡Felicidades! Llegaste a la salida!\n");
                 break;
             }
