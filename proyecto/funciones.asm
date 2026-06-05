@@ -1,30 +1,5 @@
 section .text
 
-    global validarMovimiento
-    ;validarMovimiento(int*  mapa,int columnas, int nuevaFila, int nuevaColumna)
-    ;RCX = puntero al mapa
-    ;RDX = columnas (60)
-    ;R8 = nuevaFila
-    ;R9 = nuevaColumna
-
-validarMovimiento:
-
-    ;calcular el indice del mapa
-    mov rax, r8 ;nuevaFila
-    imul rax, rdx ;nuevaFila * columnas
-    add rax, r9 ;nuevaFila * columnas + nuevaColumna
-    ;Leemos el valor en esa posicion de memoria
-    mov al,byte [rcx + rax]
-    ;Si el valor es '#', es una pared, retornamos 0 (movimiento no valido)
-    cmp al, 35 ;ASCII de '#'
-    je .movimiento_invalido
-    ;Si no es '#', el movimiento es valido, retornamos 1
-    mov eax, 1
-    ret
-
-.movimiento_invalido:
-    mov rax, 0
-    ret
 
     
     global contarCaracteres
@@ -55,6 +30,67 @@ contarCaracteres:
 .fin_contar:
     ret               ; Retornamos el total 
 
+    global validarMovimiento
+    ; Función obligatoria 2: validarMovimiento
+    ;validarMovimiento(int*  mapa,int columnas, int nuevaFila, int nuevaColumna)
+    ;RCX = puntero al mapa
+    ;RDX = columnas (60)
+    ;R8 = nuevaFila
+    ;R9 = nuevaColumna
+
+validarMovimiento:
+
+    ;calcular el indice del mapa
+    mov rax, r8 ;nuevaFila
+    imul rax, rdx ;nuevaFila * columnas
+    add rax, r9 ;nuevaFila * columnas + nuevaColumna
+    ;Leemos el valor en esa posicion de memoria
+    mov al,byte [rcx + rax]
+    ;Si el valor es '#', es una pared, retornamos 0 (movimiento no valido)
+    cmp al, 35 ;ASCII de '#'
+    je .movimiento_invalido
+    ;Si no es '#', el movimiento es valido, retornamos 1
+    mov eax, 1
+    ret
+
+.movimiento_invalido:
+    mov rax, 0
+    ret
+
+global detectarObjeto
+    ; Función obligatoria 4: detectarObjeto
+    ; Recibe desde C 5 parámetros:
+    ; RCX = Dirección inicial del mapa (char*)
+    ; RDX = Número de columnas (int)
+    ; R8  = Fila a revisar (int)
+    ; R9  = Columna a revisar (int)
+    ; [rsp + 40] = Objeto a buscar 
+    ; Retorna:
+    ; RAX = 1 si el objeto está, 0 si no está.
+
+detectarObjeto:
+    ; Guardamos el objeto a buscar en r10b
+    mov r10b, byte [rsp + 40] ; Objeto a buscar (
+
+    ; Calculamos el índice del mapa
+    mov rax, r8 ; Fila a revisar
+    imul rax, rdx ; Fila a revisar * columnas
+    add rax, r9 ; Fila a revisar * columnas + Columna a revisar
+
+    ; Leemos el valor en esa posición de memoria
+    mov r11b, byte [rcx + rax]
+
+    ; Comparamos el valor con el objeto a buscar
+    cmp r11b, r10b
+    je .objetoEncontrado ; Si es igual, el objeto está presente
+
+.objetoNoEncontrado:
+    mov rax, 0 ; Retornamos 0 (objeto no encontrado)        
+    ret
+
+.objetoEncontrado:
+    mov rax, 1 ; Retornamos 1 (objeto encontrado)   
+    ret
 
     global contarCeldasLibres
     ; Función obligatoria 5: contar celdas libres
