@@ -38,8 +38,12 @@ int main(){
     int monedasRecogidas = 0;
     int monedasTotales = 0;
     int pasos = 0;
-
+    int llaves=0;
     int totalCeldas = FILAS * COL;
+    int totalPuertas = contarCaracteres(&mapa[0][0], totalCeldas, 'D');
+    int puertasAbiertas = 0;
+
+    totalPuertas = contarCaracteres(&mapa[0][0], totalCeldas, 'D');
     monedasTotales = contarCaracteres(&mapa[0][0 ], totalCeldas, 'C'); 
     int celdasLibres = contarCeldasLibres(&mapa[0][0], totalCeldas);
     while(1){
@@ -47,6 +51,7 @@ int main(){
         printf("Pasos: %d\n", pasos);
         printf("Celdas libres: %d\n", celdasLibres);
         printf("Monedas recogidas: %d/%d\n", monedasRecogidas, monedasTotales);
+        printf("Llaves: %d\n", llaves); 
         movimiento = _getch(); 
 
         int nuevaPosFila = posJugador_fila;
@@ -59,18 +64,28 @@ int main(){
         else if(movimiento == 'q' || movimiento == 'Q') break;
 
         int valido = validarMovimiento(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna);
-        
+        int tocoPuerta = detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'D');
+        if(tocoPuerta == 1 && llaves == 0){
+            valido = 0;
+        }
         if(valido){
+            if (tocoPuerta == 1){
+                llaves--;
+                puertasAbiertas++;
+                celdasLibres++;
+            }
             int tocoSalida =detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'S');
             if(tocoSalida){
                 mapa[posJugador_fila][posJugador_columna] = '.';
                 posJugador_fila = nuevaPosFila;
                 posJugador_columna = nuevaPosColumna;
                 mapa[posJugador_fila][posJugador_columna] = 'P';
+                pasos++;
 
                 imprimirTablero(mapa, posJugador_fila, posJugador_columna);
                 printf("Nivel 1 Completado\n");
                 printf("Pasos Realizados: %d\n", pasos);
+                printf("Puertas abiertas: %d/%d\n", puertasAbiertas, totalPuertas);
                 printf("Monedas recogidas: %d/%d\n", monedasRecogidas, monedasTotales);
                 int puntaje = calcularPuntaje(monedasRecogidas, pasos, 1);
                 printf("Puntaje Final del Nivel: %d\n", puntaje);
@@ -81,6 +96,12 @@ int main(){
             int tocoMoneda = detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'C');
             if(tocoMoneda){
                 monedasRecogidas++;
+                celdasLibres++;
+            }
+
+            int tocoLlave = detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'K');
+            if(tocoLlave){
+                llaves++;
                 celdasLibres++;
             }
 
