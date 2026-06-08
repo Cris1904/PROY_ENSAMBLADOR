@@ -1,19 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <windows.h>
 #include "mapas.h"
 
 #define VISTA_FILAS 20
 #define VISTA_COL 20
 
-extern int validarMovimiento(char* mapa, int columnas, int nuevaFila, int nuevaColumna);
-extern int contarCaracteres(char* mapa, int columnas, int caracter);
-extern int contarCeldasLibres(char* mapa, int totalCeldas);
-extern int detectarObjeto(char* mapa, int columnas, int filaJugador, int columnaJugador, char objeto);
-extern int calcularPuntaje(int monedas, int pasos, int niveles);
+int validarMovimiento(char* mapa, int columnas, int nuevaFila, int nuevaColumna);
+int contarCaracteres(char* mapa, int columnas, int caracter);
+int contarCeldasLibres(char* mapa, int totalCeldas);
+int detectarObjeto(char* mapa, int columnas, int filaJugador, int columnaJugador, char objeto);
+int calcularPuntaje(int monedas, int pasos, int niveles);
 
 void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna){
-    system("cls");
+    
+    // Para que el puntero vaya al inicio de la consola y reescriba para evitar el parpadeo
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(hConsole, &cursorInfo);
+    cursorInfo.bVisible = FALSE; 
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
+    COORD pos = {0, 0};
+    SetConsoleCursorPosition(hConsole, pos);
+
     int inicioFilas = jugadorFila - (VISTA_FILAS/2);
     int inicioColumnas = jugadorColumna - (VISTA_COL/2);
 
@@ -46,6 +56,9 @@ int main(){
     totalPuertas = contarCaracteres(&mapa[0][0], totalCeldas, 'D');
     monedasTotales = contarCaracteres(&mapa[0][0 ], totalCeldas, 'C'); 
     int celdasLibres = contarCeldasLibres(&mapa[0][0], totalCeldas);
+    
+    system("cls");
+    
     while(1){
         imprimirTablero(mapa, posJugador_fila, posJugador_columna);
         printf("Pasos: %d\n", pasos);
@@ -110,7 +123,11 @@ int main(){
             posJugador_columna = nuevaPosColumna;
             mapa[posJugador_fila][posJugador_columna] = 'P';
 
-            pasos++;
+            // Condicionales para que solo si es un movimiento valido sume pasos 
+            if(movimiento == 'w' || movimiento == 'W') pasos++;
+            else if(movimiento == 's' || movimiento == 'S') pasos++;
+            else if(movimiento == 'a' || movimiento == 'A') pasos++;
+            else if(movimiento == 'd' || movimiento == 'D') pasos++;
         }
     }
     return 0;

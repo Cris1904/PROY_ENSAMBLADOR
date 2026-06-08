@@ -1,18 +1,22 @@
+bits 64
+default rel 
+
 section .text
 
-    global contarCaracteres
-    ; Función obligatoria 1: contarCaracteres
-    ; Recibe desde C:
-    ; RCX = Dirección inicial del mapa (char*)
-    ; RDX = Número total de celdas (int)
-    ; R8B = Carácter que se desea contar (char de 8 bits)
-    ; Retorna:
-    ; RAX = Cantidad de veces que aparece el carácter
+global contarCaracteres
+; Función obligatoria 1: contarCaracteres
+; Recibe desde C:
+; RCX = Dirección inicial del mapa (char*)
+; RDX = Número total de celdas (int)
+; R8B = Carácter que se desea contar (char de 8 bits)
+; Retorna:
+; RAX = Cantidad de veces que aparece el carácter
+
 contarCaracteres:
     xor rax, rax      ; Inicializamos el contador en 0
     xor r9, r9        ; Inicializamos el índice en 0
 
-.ciclo_contar:
+    .ciclo_contar:
     cmp r9, rdx       ; Comparamos el índice actual con el total de celdas
     jge .fin_contar   ; Si el índice >= totalCeldas, terminamos el ciclo
     
@@ -21,21 +25,21 @@ contarCaracteres:
     jne .siguiente_contar
     inc rax           ; Si es igual, incrementamos nuestro contador
 
-.siguiente_contar:
+    .siguiente_contar:
     inc r9            ; Avanzamos a la siguiente celda
     jmp .ciclo_contar ; Repetimos el ciclo
 
-.fin_contar:
+    .fin_contar:
     ret               ; Retornamos el total 
 
 ;-------------------------------------------------------------------------------------------
-    global validarMovimiento
-    ; Función obligatoria 2: validarMovimiento
-    ; validarMovimiento(int*  mapa,int columnas, int nuevaFila, int nuevaColumna)
-    ; RCX = puntero al mapa
-    ; RDX = columnas (60)
-    ; R8 = nuevaFila
-    ;R9 = nuevaColumna
+global validarMovimiento
+; Función obligatoria 2: validarMovimiento
+; validarMovimiento(int*  mapa,int columnas, int nuevaFila, int nuevaColumna)
+; RCX = puntero al mapa
+; RDX = columnas (60)
+; R8 = nuevaFila
+;R9 = nuevaColumna
 
 validarMovimiento:
     ;calcular el indice del mapa
@@ -51,19 +55,19 @@ validarMovimiento:
     mov eax, 1
     ret
 
-.movimiento_invalido:
+    .movimiento_invalido:
     mov rax, 0
     ret
 
 ;-------------------------------------------------------------------------------------------
 global calcularPuntaje
-    ; Función obligatoria 3: calcular puntaje
-    ; Recibe desde C en arquitectura x64 (Windows):
-    ; RCX = Monedas recolectadas (int)
-    ; RDX = Pasos realizados (int)
-    ; R8  = Niveles completados (int)
-    ; Retorna:
-    ; RAX = Puntaje final calculado
+; Función obligatoria 3: calcular puntaje
+; Recibe desde C en arquitectura x64 (Windows):
+; RCX = Monedas recolectadas (int)
+; RDX = Pasos realizados (int)
+; R8  = Niveles completados (int)
+; Retorna:
+; RAX = Puntaje final calculado
 
 calcularPuntaje:
     ; Fórmula de puntaje: (Monedas * 100) - Pasos + (Niveles * 500)
@@ -82,15 +86,15 @@ calcularPuntaje:
 
 ;-------------------------------------------------------------------------------------------
 global detectarObjeto
-    ; Función obligatoria 4: detectarObjeto
-    ; Recibe desde C 5 parámetros:
-    ; RCX = Dirección inicial del mapa (char*)
-    ; RDX = Número de columnas (int)
-    ; R8  = Fila a revisar (int)
-    ; R9  = Columna a revisar (int)
-    ; [rsp + 40] = Objeto a buscar 
-    ; Retorna:
-    ; RAX = 1 si el objeto está, 0 si no está.
+; Función obligatoria 4: detectarObjeto
+; Recibe desde C 5 parámetros:
+; RCX = Dirección inicial del mapa (char*)
+; RDX = Número de columnas (int)
+; R8  = Fila a revisar (int)
+; R9  = Columna a revisar (int)
+; [rsp + 40] = Objeto a buscar 
+; Retorna:
+; RAX = 1 si el objeto está, 0 si no está.
 
 detectarObjeto:
     ; Guardamos el objeto a buscar en r10b
@@ -108,22 +112,22 @@ detectarObjeto:
     cmp r11b, r10b
     je .objetoEncontrado ; Si es igual, el objeto está presente
 
-.objetoNoEncontrado:
+    .objetoNoEncontrado:
     mov rax, 0 ; Retornamos 0 (objeto no encontrado)        
     ret
 
-.objetoEncontrado:
+    .objetoEncontrado:
     mov rax, 1 ; Retornamos 1 (objeto encontrado)   
     ret
 
 ;-------------------------------------------------------------------------------------------
-    global contarCeldasLibres
-    ; Función obligatoria 5: contar celdas libres
-    ; Recibe desde C:
-    ; RCX = Dirección inicial del mapa (char*)
-    ; RDX = Número total de celdas (int)
-    ; Retorna:
-    ; RAX = Cantidad de celdas libres ('.')
+global contarCeldasLibres
+; Función obligatoria 5: contar celdas libres
+; Recibe desde C:
+; RCX = Dirección inicial del mapa (char*)
+; RDX = Número total de celdas (int)
+; Retorna:
+; RAX = Cantidad de celdas libres ('.')
 
 contarCeldasLibres:
     xor rax, rax      ; Inicializamos el contador en 0
@@ -138,11 +142,11 @@ contarCeldasLibres:
     jne .siguiente_libre
     inc rax           ; Si es igual, incrementamos nuestro contador
 
-.siguiente_libre:
+    .siguiente_libre:
     inc r9            ; Avanzamos a la siguiente celda
     jmp .cicloLibres  ; Repetimos el ciclo
 
-.finLibres:
+    .finLibres:
     ret               ; Retornamos el total 
 
 ;-------------------------------------------------------------------------------------------
