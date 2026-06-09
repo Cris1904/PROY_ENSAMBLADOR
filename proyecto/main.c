@@ -1,9 +1,28 @@
+/*
+    PROYECTO FINAL
+
+    Materia: Lenguaje ensamblador.
+    Maestro: Irving Cardona Camacho.
+    Grado y grupo: 4A
+    Integrantes:
+        - Lopez Acevedo Tania Jaquelin.
+        - Duron Mendoza Antonio.
+        - Raygoza Castañeda Ulises.
+        - Vázquez Delgado Cristian de Jesús.
+
+    Fecha de entrega: lunes 15 de junio del 2026
+*/
+
+//Librerias
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
 #include <windows.h>
-#include "mapas.h"
 
+//tamaño de los mapas
+#define FILAS 60
+#define COL 60
+//tamaño de la vista
 #define VISTA_FILAS 20
 #define VISTA_COL 20
 
@@ -29,12 +48,13 @@ int main(){
 //-----------------------Implementacion de funciones de c--------------------------------
 //Funcion que contiene el manejo del menu principal
 void menu(){
-    //limpiamos pantalla
-    system("cls");
+    
 
     //Ciclo while para siempre mantener abierto el menu y un switch para comprobar seleccion
     int opc = 0;
     do{
+        //limpiamos pantalla
+        system("cls");
         printf("\n\tMenu principal BitQuest.");
         printf("\n 1.Jugar.");
         printf("\n 0.Salir.");
@@ -47,6 +67,7 @@ void menu(){
             case 0:
                 //mensaje al salir
                 printf("\n Saliendo... \n ");
+                system("pause");
                 break;
             default:
                 break;
@@ -77,7 +98,7 @@ void juego(){
     int puertasAbiertas = 0;
 
     totalPuertas = contarCaracteres(&mapa[0][0], totalCeldas, 'D');
-    monedasTotales = contarCaracteres(&mapa[0][0 ], totalCeldas, 'C'); 
+    monedasTotales = contarCaracteres(&mapa[0][0 ], totalCeldas, 'M'); 
     int celdasLibres = contarCeldasLibres(&mapa[0][0], totalCeldas);
     
     //Ciclo de ejecucion del juego
@@ -109,7 +130,7 @@ void juego(){
                 puertasAbiertas++;
                 celdasLibres++;
             }
-            int tocoSalida =detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'S');
+            int tocoSalida =detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'E');
             if(tocoSalida){
                 mapa[posJugador_fila][posJugador_columna] = '.';
                 posJugador_fila = nuevaPosFila;
@@ -124,11 +145,13 @@ void juego(){
                 printf("Monedas recogidas: %d/%d\n", monedasRecogidas, monedasTotales);
                 int puntaje = calcularPuntaje(monedasRecogidas, pasos, 1);
                 printf("Puntaje Final del Nivel: %d\n", puntaje);
-                printf("\n¡Felicidades! Llegaste a la salida!\n");
+                printf("\nFelicidades, llegaste a la salida\n");
+                system("pause");
+                //aqui pasariamos al siguiente nivel
                 break;
             }
 
-            int tocoMoneda = detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'C');
+            int tocoMoneda = detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'M');
             if(tocoMoneda){
                 monedasRecogidas++;
                 celdasLibres++;

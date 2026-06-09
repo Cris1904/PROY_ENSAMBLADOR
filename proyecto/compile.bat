@@ -7,4 +7,3 @@ gcc main.c funciones.obj -o BitQuest.exe
 
 echo Compilacion terminada.
 BitQuest.exe
-pause
