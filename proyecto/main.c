@@ -7,41 +7,23 @@
 #define VISTA_FILAS 20
 #define VISTA_COL 20
 
+//Prototipo de funciones obligatorias implementadas en NASM
 int validarMovimiento(char* mapa, int columnas, int nuevaFila, int nuevaColumna);
 int contarCaracteres(char* mapa, int columnas, int caracter);
 int contarCeldasLibres(char* mapa, int totalCeldas);
 int detectarObjeto(char* mapa, int columnas, int filaJugador, int columnaJugador, char objeto);
 int calcularPuntaje(int monedas, int pasos, int niveles);
 
-void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna){
-    
-    // Para que el puntero vaya al inicio de la consola y reescriba para evitar el parpadeo
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_CURSOR_INFO cursorInfo;
-    GetConsoleCursorInfo(hConsole, &cursorInfo);
-    cursorInfo.bVisible = FALSE; 
-    SetConsoleCursorInfo(hConsole, &cursorInfo);
-    COORD pos = {0, 0};
-    SetConsoleCursorPosition(hConsole, pos);
-
-    int inicioFilas = jugadorFila - (VISTA_FILAS/2);
-    int inicioColumnas = jugadorColumna - (VISTA_COL/2);
-
-    if(inicioFilas < 0) inicioFilas = 0;
-    if(inicioColumnas < 0) inicioColumnas = 0;
-    if(inicioFilas > FILAS - VISTA_FILAS) inicioFilas = FILAS - VISTA_FILAS;
-    if(inicioColumnas > COL - VISTA_COL) inicioColumnas = COL - VISTA_COL;
-
-    for(int i = inicioFilas; i < inicioFilas + VISTA_FILAS; i++){
-        for(int j = inicioColumnas; j < inicioColumnas + VISTA_COL; j++){
-            if(mat[i][j]=='#') printf("# ");
-            else printf("%c ", mat[i][j]);
-        }
-        printf("\n");
-    }
-}
+//Prototipo de funciones en c
+void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna);
+void cargarMapaArchivo(char* nombreMapa, char mapa[FILAS][COL]);
 
 int main(){
+    //Declaramos la matriz que contendra el mapa de los niveles
+    char mapa[FILAS][COL];
+    //Cargamos del archivo de texto el mapa del nivel 1
+    cargarMapaArchivo("mapaNivel1.txt", mapa);
+
     int posJugador_fila = 1;
     int posJugador_columna = 1;
     char movimiento;
@@ -131,4 +113,72 @@ int main(){
         }
     }
     return 0;
+}
+
+//Implementacion de funciones de c
+
+//Funcion que imprime el mapa del nivel cargado en la matriz
+void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna){
+    
+    // Para que el puntero vaya al inicio de la consola y reescriba para evitar el parpadeo
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(hConsole, &cursorInfo);
+    cursorInfo.bVisible = FALSE; 
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
+    COORD pos = {0, 0};
+    SetConsoleCursorPosition(hConsole, pos);
+
+    int inicioFilas = jugadorFila - (VISTA_FILAS/2);
+    int inicioColumnas = jugadorColumna - (VISTA_COL/2);
+
+    if(inicioFilas < 0) inicioFilas = 0;
+    if(inicioColumnas < 0) inicioColumnas = 0;
+    if(inicioFilas > FILAS - VISTA_FILAS) inicioFilas = FILAS - VISTA_FILAS;
+    if(inicioColumnas > COL - VISTA_COL) inicioColumnas = COL - VISTA_COL;
+
+    for(int i = inicioFilas; i < inicioFilas + VISTA_FILAS; i++){
+        for(int j = inicioColumnas; j < inicioColumnas + VISTA_COL; j++){
+            if(mat[i][j]=='#') printf("# ");
+            else printf("%c ", mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+//Funcion que lee el mapa del archivo de texto para guardarlo en la matriz del juego
+void cargarMapaArchivo(char* nombreMapa, char mapa[FILAS][COL]){
+    //vector de char que contendra linea leida
+    char linea[256];
+
+    //definimos puntero al archivo
+    FILE *archivoTxt;
+
+    //abrimos el archivo modo lectura
+    archivoTxt = fopen(nombreMapa,"r");
+
+    //verificamos existencia del archivo (terminamos pograma si no existe)
+    if(archivoTxt == NULL){
+        printf("\nError al abrir archivo modo lectura. ");
+        exit(1);
+    }
+
+    //leemos el archivo linea por linea (mientras alla algo que leer o recorramos el tam 60)
+    int filaMapa = 0;
+    while(fgets(linea,sizeof(linea),archivoTxt) != NULL && filaMapa < FILAS){
+        int colMapa = 0;
+        for(int j=0; linea[j]!='\0' && linea[j] != '\n' && colMapa < COL; j++){
+            //si es espacio lo ignoramos sino lo guardamos en matriz
+            if(linea[j]!=' '){
+                //no hacemos nada
+                mapa[filaMapa][colMapa] = linea[j];
+                colMapa++;
+            }
+            j++; //desplazamiento horizontal en el renglon
+        }
+        filaMapa++;
+    }
+
+    //cerramos el archivo
+    fclose(archivoTxt);
 }
