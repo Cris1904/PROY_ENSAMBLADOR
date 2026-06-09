@@ -15,15 +15,56 @@ int detectarObjeto(char* mapa, int columnas, int filaJugador, int columnaJugador
 int calcularPuntaje(int monedas, int pasos, int niveles);
 
 //Prototipo de funciones en c
+void menu();
+void juego();
 void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna);
 void cargarMapaArchivo(char* nombreMapa, char mapa[FILAS][COL]);
 
 int main(){
+    //mandamos ejecutar el manu principal
+    menu();
+    return 0;
+}
+
+//-----------------------Implementacion de funciones de c--------------------------------
+//Funcion que contiene el manejo del menu principal
+void menu(){
+    //limpiamos pantalla
+    system("cls");
+
+    //Ciclo while para siempre mantener abierto el menu y un switch para comprobar seleccion
+    int opc = 0;
+    do{
+        printf("\n\tMenu principal BitQuest.");
+        printf("\n 1.Jugar.");
+        printf("\n 0.Salir.");
+        printf("\n\n Opcion: ");
+        scanf(" %d", &opc);
+        switch(opc){
+            case 1:
+                juego();
+                break;
+            case 0:
+                //mensaje al salir
+                printf("\n Saliendo... \n ");
+                break;
+            default:
+                break;
+        }
+    }while(opc!=0);
+}
+
+//Funcion que contiene la logica y ejecucion de todo el juego
+void juego(){
+    //limpiamos pantalla
+    system("cls");
+
     //Declaramos la matriz que contendra el mapa de los niveles
     char mapa[FILAS][COL];
-    //Cargamos del archivo de texto el mapa del nivel 1
-    cargarMapaArchivo("mapaNivel1.txt", mapa);
+    //Comenzamos el juego con el mapa del nivel 1 (asi que lo cargamos del archivo de texto)
+    cargarMapaArchivo("mapas/mapaNivel1.txt", mapa);
 
+    //Inicializamos datos de la partida
     int posJugador_fila = 1;
     int posJugador_columna = 1;
     char movimiento;
@@ -39,8 +80,7 @@ int main(){
     monedasTotales = contarCaracteres(&mapa[0][0 ], totalCeldas, 'C'); 
     int celdasLibres = contarCeldasLibres(&mapa[0][0], totalCeldas);
     
-    system("cls");
-    
+    //Ciclo de ejecucion del juego
     while(1){
         imprimirTablero(mapa, posJugador_fila, posJugador_columna);
         printf("Pasos: %d\n", pasos);
@@ -112,10 +152,7 @@ int main(){
             else if(movimiento == 'd' || movimiento == 'D') pasos++;
         }
     }
-    return 0;
 }
-
-//Implementacion de funciones de c
 
 //Funcion que imprime el mapa del nivel cargado en la matriz
 void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna){
