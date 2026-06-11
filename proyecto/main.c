@@ -35,7 +35,7 @@ int calcularPuntaje(int monedas, int pasos, int niveles);
 
 //Prototipo de funciones en c
 void menu();
-void juego();
+void juego(int nivel);
 void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna);
 void cargarMapaArchivo(char* nombreMapa, char mapa[FILAS][COL]);
 
@@ -62,7 +62,10 @@ void menu(){
         scanf(" %d", &opc);
         switch(opc){
             case 1:
-                juego();
+                //Manejo de 3 niveles
+                juego(1);
+                juego(2);
+                juego(3);
                 break;
             case 0:
                 //mensaje al salir
@@ -76,18 +79,29 @@ void menu(){
 }
 
 //Funcion que contiene la logica y ejecucion de todo el juego
-void juego(){
+void juego(int nivel){
     //limpiamos pantalla
     system("cls");
 
     //Declaramos la matriz que contendra el mapa de los niveles
     char mapa[FILAS][COL];
-    //Comenzamos el juego con el mapa del nivel 1 (asi que lo cargamos del archivo de texto)
-    cargarMapaArchivo("mapas/mapaNivel1.txt", mapa);
 
-    //Inicializamos datos de la partida
-    int posJugador_fila = 1;
-    int posJugador_columna = 1;
+    //Cargamos el mapa segun el nivel
+    switch(nivel){
+        case 1: 
+            cargarMapaArchivo("mapas/mapaNivel1.txt", mapa);
+            break;
+        case 2: 
+            cargarMapaArchivo("mapas/mapaNivel2.txt", mapa);
+            break;
+        case 3: 
+            cargarMapaArchivo("mapas/mapaNivel3.txt", mapa);
+            break;
+        defautl:
+            break;
+    }
+
+    //Inicializamos datos del nivel
     char movimiento;
     int monedasRecogidas = 0;
     int monedasTotales = 0;
@@ -96,10 +110,21 @@ void juego(){
     int totalCeldas = FILAS * COL;
     int totalPuertas = contarCaracteres(&mapa[0][0], totalCeldas, 'D');
     int puertasAbiertas = 0;
-
+    //Contabilizamos datos del mapa
     totalPuertas = contarCaracteres(&mapa[0][0], totalCeldas, 'D');
     monedasTotales = contarCaracteres(&mapa[0][0 ], totalCeldas, 'M'); 
     int celdasLibres = contarCeldasLibres(&mapa[0][0], totalCeldas);
+    //Encontramos posicion del jugador
+    int posJugador_fila;
+    int posJugador_columna;
+    for(int i=0; i<60; i++){
+        for(int j=0; j<60; j++){
+            if(mapa[i][j]=='P'){
+                posJugador_fila = i;
+                posJugador_columna = j;
+            }
+        }
+    }
     
     //Ciclo de ejecucion del juego
     while(1){
@@ -139,16 +164,18 @@ void juego(){
                 pasos++;
 
                 imprimirTablero(mapa, posJugador_fila, posJugador_columna);
-                printf("Nivel 1 Completado\n");
-                printf("Pasos Realizados: %d\n", pasos);
-                printf("Puertas abiertas: %d/%d\n", puertasAbiertas, totalPuertas);
-                printf("Monedas recogidas: %d/%d\n", monedasRecogidas, monedasTotales);
+
+                //Reporte final del nivel completado
+                system("cls");
+                printf("\n Felicidades, llegaste a la salida\n\n");
+                printf(" Nivel %d completado\n", nivel);
+                printf(" Pasos Realizados: %d\n", pasos);
+                printf(" Puertas abiertas: %d/%d\n", puertasAbiertas, totalPuertas);
+                printf(" Monedas recogidas: %d/%d\n", monedasRecogidas, monedasTotales);
                 int puntaje = calcularPuntaje(monedasRecogidas, pasos, 1);
-                printf("Puntaje Final del Nivel: %d\n", puntaje);
-                printf("\nFelicidades, llegaste a la salida\n");
+                printf(" Puntaje Final del Nivel: %d\n\n ", puntaje);
                 system("pause");
-                //aqui pasariamos al siguiente nivel
-                break;
+                break; //terminamos bucle del juego (con nivel N)
             }
 
             int tocoMoneda = detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'M');
