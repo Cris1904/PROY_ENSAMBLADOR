@@ -41,6 +41,9 @@ void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna);
 void cargarMapaArchivo(char* nombreMapa, char mapa[FILAS][COL]);
 
 int main(){
+    //activamos caracteres especiales para el mapa
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
     //mandamos ejecutar el manu principal
     menu();
     return 0;
@@ -56,10 +59,20 @@ void menu(){
     do{
         //limpiamos pantalla
         system("cls");
-        printf("\n\tMenu principal BitQuest.");
-        printf("\n 1.Jugar.");
-        printf("\n 0.Salir.");
-        printf("\n\n Opcion: ");
+        printf("\n\t=====================================");
+        printf("\n\t║           B I T Q U E S T         ║");
+        printf("\n\t=====================================");
+        printf("\n\t║ [1] Comenzar Juego                ║");
+        printf("\n\t║ [0] Salir                         ║");
+        printf("\n\t║-----------------------------------║");
+        printf("\n\t║ Proyecto Final por:               ║");
+        printf("\n\t║ -Lopez Acevedo Tania Jaquelin     ║");
+        printf("\n\t║ -Duron Mendoza Antonio            ║");
+        printf("\n\t║ -Raygoza Castañeda Ulises         ║");
+        printf("\n\t║ -Vázquez Delgado Cristian de Jesús║");
+        printf("\n\t=====================================");
+        
+        printf("\n\n\t Opcion: ");
         scanf(" %d", &opc);
         switch(opc){
             case 1:
@@ -124,10 +137,16 @@ void juego(int nivel){
     //Ciclo de ejecucion del juego
     while(1){
         imprimirTablero(mapa, posJugador_fila, posJugador_columna);
-        printf("Pasos: %d\n", pasos);
-        printf("Celdas libres: %d\n", celdasLibres);
-        printf("Monedas recogidas: %d/%d\n", monedasRecogidas, monedasTotales);
-        printf("Llaves: %d\n", llaves); 
+        printf("\n=========================================\n");
+        printf("  ESTADO DEL JUGADOR      [ Nivel %d ]\n", nivel);
+        printf("=========================================\n");
+        printf("  Movimientos (Pasos):  %d\n", pasos);
+        printf("  Monedas Recogidas:   %d / %d\n", monedasRecogidas, monedasTotales); 
+        printf("  Llaves en Inventario: %d\n", llaves);     
+        printf("  Celdas Exploradas:   %d\n", celdasLibres); 
+        printf("=========================================\n");
+        printf(" [W/A/S/D] Moverse  |  [Q] Salir al Menu\n");
+        printf("=========================================\n");
         movimiento = _getch(); 
 
         int nuevaPosFila = posJugador_fila;
@@ -162,13 +181,20 @@ void juego(int nivel){
 
                 //Reporte final del nivel completado
                 system("cls");
-                printf("\n Felicidades, llegaste a la salida\n\n");
-                printf(" Nivel %d completado\n", nivel);
-                printf(" Pasos Realizados: %d\n", pasos);
-                printf(" Puertas abiertas: %d/%d\n", puertasAbiertas, totalPuertas);
-                printf(" Monedas recogidas: %d/%d\n", monedasRecogidas, monedasTotales);
+                printf("\n\t=========================================");
+                printf("\n\t║       FIN DEL JUEGO                   ║");
+                printf("\n\t=========================================");
+                printf("\n\t║ Felicidades, llegaste a la salida.    ║");
+                printf("\n\t-----------------------------------------");
+                printf("\n\t  RESUMEN DEL NIVEL %d:", nivel);
+                printf("\n\t  Pasos Realizados:   %d", pasos);
+                printf("\n\t  Puertas Abiertas:   %d / %d", puertasAbiertas, totalPuertas);
+                printf("\n\t  Monedas Recogidas:  %d / %d", monedasRecogidas, monedasTotales);
+                printf("\n\t-----------------------------------------");
                 int puntaje = calcularPuntaje(monedasRecogidas, pasos, 1);
-                printf(" Puntaje Final del Nivel: %d\n\n ", puntaje);
+                printf("\n\t  -- PUNTAJE FINAL:      %d puntos ---", puntaje);
+                printf("\n\t=========================================\n\t ");
+
                 system("pause");
                 break; //terminamos bucle del juego (con nivel N)
             }
@@ -221,8 +247,15 @@ void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna){
 
     for(int i = inicioFilas; i < inicioFilas + VISTA_FILAS; i++){
         for(int j = inicioColumnas; j < inicioColumnas + VISTA_COL; j++){
-            if(mat[i][j]=='#') printf("# ");
-            else printf("%c ", mat[i][j]);
+            if(mat[i][j] == '#') {
+                printf("██");
+            } else if(mat[i][j] == 'D') {
+                printf("░░");
+            } else if(mat[i][j] == 'M') {
+                printf("¢ ");
+            } else {
+                printf("%c ", mat[i][j]);
+            }
         }
         printf("\n");
     }
