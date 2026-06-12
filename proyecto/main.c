@@ -67,6 +67,9 @@ void menu(){
     do{
         //limpiamos pantalla
         system("cls");
+        //Agregamos color
+        system("color 0B");
+        //Imprimimos el menu
         printf("\n\t=====================================");
         printf("\n\t║           B I T Q U E S T         ║");
         printf("\n\t=====================================");
@@ -89,7 +92,10 @@ void menu(){
                 juego(2);
                 juego(3);
                 //Una vez pasados los 3 niveles mostramos el reporte final del juego
-                system("cls");                
+                system("cls"); 
+                //Agregamos color
+                system("color 0E");  
+                //Mostramos reporte final             
                 printf("\n\t=========================================");
                 printf("\n\t          ¡JUEGO COMPLETADO! ");
                 printf("\n\t=========================================");
@@ -101,7 +107,7 @@ void menu(){
                 printf("\n\t  Monedas Totales:     %d / %d", monedasRecogidasTotales, monedasPosiblesTotales);
                 printf("\n\t-----------------------------------------");
                 printf("\n\t  --- PUNTAJE TOTAL: %d puntos ---", puntajeGlobal);
-                printf("\n\t=========================================");
+                printf("\n\t=========================================\n\t");
 
                 system("pause");
                 break;
@@ -160,6 +166,8 @@ void juego(int nivel){
     
     //Ciclo de ejecucion del juego
     while(1){
+        //Limpiamos pantalla y mostramos el mapa y el estado del jugador
+        system("color 0F");
         imprimirTablero(mapa, posJugador_fila, posJugador_columna);
         printf("\n=========================================\n");
         printf("  ESTADO DEL JUGADOR      [ Nivel %d ]\n", nivel);
@@ -205,6 +213,9 @@ void juego(int nivel){
 
                 //Reporte final del nivel completado
                 system("cls");
+                //Agregamos color
+                system("color 0E");
+                //Mostramos reporte final del nivel
                 printf("\n\t=========================================");
                 printf("\n\t║       FIN DEL NIVEL                   ║");
                 printf("\n\t=========================================");
@@ -243,12 +254,13 @@ void juego(int nivel){
                 celdasLibres++;
             }
 
+            //Actualizamos posicion del jugador en el mapa
             mapa[posJugador_fila][posJugador_columna] = '.';
             posJugador_fila = nuevaPosFila;
             posJugador_columna = nuevaPosColumna;
             mapa[posJugador_fila][posJugador_columna] = 'P';
 
-            // Condicionales para que solo si es un movimiento valido sume pasos 
+            //Condicionales para que solo si es un movimiento valido sume pasos 
             if(movimiento == 'w' || movimiento == 'W') pasos++;
             else if(movimiento == 's' || movimiento == 'S') pasos++;
             else if(movimiento == 'a' || movimiento == 'A') pasos++;
@@ -260,7 +272,7 @@ void juego(int nivel){
 //Funcion que imprime el mapa del nivel cargado en la matriz
 void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna){
     
-    // Para que el puntero vaya al inicio de la consola y reescriba para evitar el parpadeo
+    //Para que el puntero vaya al inicio de la consola y reescriba para evitar el parpadeo
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO cursorInfo;
     GetConsoleCursorInfo(hConsole, &cursorInfo);
@@ -272,11 +284,13 @@ void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna){
     int inicioFilas = jugadorFila - (VISTA_FILAS/2);
     int inicioColumnas = jugadorColumna - (VISTA_COL/2);
 
+    //Condicionales para evitar que la vista se salga del mapa
     if(inicioFilas < 0) inicioFilas = 0;
     if(inicioColumnas < 0) inicioColumnas = 0;
     if(inicioFilas > FILAS - VISTA_FILAS) inicioFilas = FILAS - VISTA_FILAS;
     if(inicioColumnas > COL - VISTA_COL) inicioColumnas = COL - VISTA_COL;
 
+    //Imprimimos solo la parte del mapa que ve el jugador
     for(int i = inicioFilas; i < inicioFilas + VISTA_FILAS; i++){
         for(int j = inicioColumnas; j < inicioColumnas + VISTA_COL; j++){
             if(mat[i][j] == '#') {
