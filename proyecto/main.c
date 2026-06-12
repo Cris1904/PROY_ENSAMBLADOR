@@ -26,6 +26,14 @@
 #define VISTA_FILAS 20
 #define VISTA_COL 20
 
+//Variables globales para el reporte final
+int pasosTotales = 0;
+int monedasRecogidasTotales = 0;
+int monedasPosiblesTotales = 0;
+int puertasAbiertasTotales = 0;
+int totalPuertas = 0;
+int puntajeGlobal = 0;
+
 //Prototipo de funciones obligatorias (y extras) implementadas en NASM
 int contarCaracteres(char* mapa, int columnas, int caracter);
 int validarMovimiento(char* mapa, int columnas, int nuevaFila, int nuevaColumna);
@@ -80,6 +88,22 @@ void menu(){
                 juego(1);
                 juego(2);
                 juego(3);
+                //Una vez pasados los 3 niveles mostramos el reporte final del juego
+                system("cls");                
+                printf("\n\t=========================================");
+                printf("\n\t          ¡JUEGO COMPLETADO! ");
+                printf("\n\t=========================================");
+                printf("\n\t             ¡Felicidades! ");
+                printf("\n\t-----------------------------------------");
+                printf("\n\t  ESTADISTICAS GLOBALES DE LA AVENTURA:");
+                printf("\n\t  Pasos Totales:       %d", pasosTotales);
+                printf("\n\t  Puertas Abiertas:    %d / %d", puertasAbiertasTotales, totalPuertas);
+                printf("\n\t  Monedas Totales:     %d / %d", monedasRecogidasTotales, monedasPosiblesTotales);
+                printf("\n\t-----------------------------------------");
+                printf("\n\t  --- PUNTAJE TOTAL: %d puntos ---", puntajeGlobal);
+                printf("\n\t=========================================");
+
+                system("pause");
                 break;
             case 0:
                 //mensaje al salir
@@ -182,7 +206,7 @@ void juego(int nivel){
                 //Reporte final del nivel completado
                 system("cls");
                 printf("\n\t=========================================");
-                printf("\n\t║       FIN DEL JUEGO                   ║");
+                printf("\n\t║       FIN DEL NIVEL                   ║");
                 printf("\n\t=========================================");
                 printf("\n\t║ Felicidades, llegaste a la salida.    ║");
                 printf("\n\t-----------------------------------------");
@@ -194,6 +218,14 @@ void juego(int nivel){
                 int puntaje = calcularPuntaje(monedasRecogidas, pasos, 1);
                 printf("\n\t  -- PUNTAJE FINAL:      %d puntos ---", puntaje);
                 printf("\n\t=========================================\n\t ");
+
+                //Sumamos al reporte final
+                pasosTotales += pasos;
+                monedasRecogidasTotales += monedasRecogidas;
+                monedasPosiblesTotales += monedasTotales;
+                puertasAbiertasTotales += puertasAbiertas;
+                totalPuertas += totalPuertas;
+                puntajeGlobal += puntaje;
 
                 system("pause");
                 break; //terminamos bucle del juego (con nivel N)
