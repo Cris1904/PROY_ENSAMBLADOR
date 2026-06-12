@@ -44,7 +44,7 @@ void encontrarPosicionJugador(char* mapa, int* posJugador_fila, int* posJugador_
 
 //Prototipo de funciones en c
 void menu();
-void juego(int nivel);
+int juego(int nivel);
 void imprimirTablero(char mat[FILAS][COL], int jugadorFila, int jugadorColumna);
 void cargarMapaArchivo(char* nombreMapa, char mapa[FILAS][COL]);
 
@@ -87,14 +87,25 @@ void menu(){
         scanf(" %d", &opc);
         switch(opc){
             case 1:
+                //Reiniciamos variables globales para el reporte final
+                pasosTotales = 0;
+                monedasRecogidasTotales = 0;
+                monedasPosiblesTotales = 0;
+                puertasAbiertasTotales = 0;
+                totalPuertas = 0;
+                puntajeGlobal = 0;
+
                 //Manejo de 3 niveles
-                juego(1);
-                juego(2);
-                juego(3);
+                if (juego(1) == 0) break;
+                if (juego(2) == 0) break;
+                if (juego(3) == 0) break;
+
                 //Una vez pasados los 3 niveles mostramos el reporte final del juego
                 system("cls"); 
+
                 //Agregamos color
-                system("color 0E");  
+                system("color 0E"); 
+
                 //Mostramos reporte final             
                 printf("\n\t=========================================");
                 printf("\n\t          ¡JUEGO COMPLETADO! ");
@@ -123,7 +134,8 @@ void menu(){
 }
 
 //Funcion que contiene la logica y ejecucion de todo el juego
-void juego(int nivel){
+//Regresa 1 si se completo el nivel y 0 si el jugador sale al menu principal
+int juego(int nivel){
     //limpiamos pantalla
     system("cls");
 
@@ -188,7 +200,7 @@ void juego(int nivel){
         else if(movimiento == 's' || movimiento == 'S') nuevaPosFila++;
         else if(movimiento == 'a' || movimiento == 'A') nuevaPosColumna--;
         else if(movimiento == 'd' || movimiento == 'D') nuevaPosColumna++;
-        else if(movimiento == 'q' || movimiento == 'Q') break;
+        else if(movimiento == 'q' || movimiento == 'Q') return 0; //regresamos al menu principal
 
         int valido = validarMovimiento(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna);
         int tocoPuerta = detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'D');
@@ -239,7 +251,8 @@ void juego(int nivel){
                 puntajeGlobal += puntaje;
 
                 system("pause");
-                break; //terminamos bucle del juego (con nivel N)
+                //Regresamos 1 para indicar que se completo el nivel
+                return 1;
             }
 
             int tocoMoneda = detectarObjeto(&mapa[0][0], COL, nuevaPosFila, nuevaPosColumna, 'M');
