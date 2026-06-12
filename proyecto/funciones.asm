@@ -150,3 +150,44 @@ contarCeldasLibres:
     ret               ; Retornamos el total 
 
 ;-------------------------------------------------------------------------------------------
+global encontrarPosicionJugador
+; Función extra para saber en que posicion inicial se encuentra el jugador (segun el nivel)
+; Recibe desde C:
+; RCX = Dirección inicial del mapa (char*)
+; RDX = Puntero (referencia) a la fila del jugador (int*)
+; R8 = Puntero (referencia) a la columna del jugador (int*)
+; R9B = Caracter que se desea encontrar (char de 8 bits)
+; No retorna nada, si no que modificaremos valores que fueron pasados por referencia (punteros)
+
+encontrarPosicionJugador:
+    ;Inicializamos registros que nos serviran para la busqueda
+    xor r10,r10         ; para i (Fila)
+    xor r11,r11         ; para j (columna)
+
+    .ciclo_buscar:
+    cmp r10, 60         ;terminamos hasta que fila llegue a 60
+    jge .fin_buscar
+    
+    mov al, byte [rcx]  ; Leemos 1 byte (un carácter) del mapa
+    cmp al, r9b         ; Es igual al carácter del jugador
+    jne .siguiente_buscar
+
+                        ; encontramos al jugador 
+    mov dword [rdx],r10d; guardamos por referencia *fila  = i
+    mov dword [r8],r11d ; guardamos por referencia *columna  = j
+    jmp .fin_buscar
+
+    .siguiente_buscar:
+    inc rcx             ; incrementamos puntero de memoria
+    inc r11             ; Avanzamos la columna j++
+
+    cmp r11, 60         ; comprobamos si llegamos al final de la columna
+    jl .ciclo_buscar    ; Repetimos el ciclo
+
+                        ; si llegamos a la columna 60 
+    xor r11, r11        ; reseteamos el contador de columnas
+    inc r10             ; pasamos a la siguiente fila
+    jmp .ciclo_buscar 
+
+    .fin_buscar:
+    ret               ; Retornamos el total 

@@ -26,12 +26,13 @@
 #define VISTA_FILAS 20
 #define VISTA_COL 20
 
-//Prototipo de funciones obligatorias implementadas en NASM
-int validarMovimiento(char* mapa, int columnas, int nuevaFila, int nuevaColumna);
+//Prototipo de funciones obligatorias (y extras) implementadas en NASM
 int contarCaracteres(char* mapa, int columnas, int caracter);
-int contarCeldasLibres(char* mapa, int totalCeldas);
-int detectarObjeto(char* mapa, int columnas, int filaJugador, int columnaJugador, char objeto);
+int validarMovimiento(char* mapa, int columnas, int nuevaFila, int nuevaColumna);
 int calcularPuntaje(int monedas, int pasos, int niveles);
+int detectarObjeto(char* mapa, int columnas, int filaJugador, int columnaJugador, char objeto);
+int contarCeldasLibres(char* mapa, int totalCeldas);
+void encontrarPosicionJugador(char* mapa, int* posJugador_fila, int* posJugador_columna, char caracterBuscar);
 
 //Prototipo de funciones en c
 void menu();
@@ -97,7 +98,7 @@ void juego(int nivel){
         case 3: 
             cargarMapaArchivo("mapas/mapaNivel3.txt", mapa);
             break;
-        defautl:
+        default:
             break;
     }
 
@@ -114,17 +115,11 @@ void juego(int nivel){
     totalPuertas = contarCaracteres(&mapa[0][0], totalCeldas, 'D');
     monedasTotales = contarCaracteres(&mapa[0][0 ], totalCeldas, 'M'); 
     int celdasLibres = contarCeldasLibres(&mapa[0][0], totalCeldas);
-    //Encontramos posicion del jugador
-    int posJugador_fila;
-    int posJugador_columna;
-    for(int i=0; i<60; i++){
-        for(int j=0; j<60; j++){
-            if(mapa[i][j]=='P'){
-                posJugador_fila = i;
-                posJugador_columna = j;
-            }
-        }
-    }
+    //Inicializamos las variables y las mandamos como refernecia a la funcion que encuentra la posicion del jugador
+    int posJugador_fila = 0;
+    int posJugador_columna = 0;
+    encontrarPosicionJugador(&mapa[0][0], &posJugador_fila, &posJugador_columna, 'P');
+
     
     //Ciclo de ejecucion del juego
     while(1){
