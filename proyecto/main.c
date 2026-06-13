@@ -52,6 +52,7 @@ int main(){
     //activamos caracteres especiales para el mapa
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
+
     //mandamos ejecutar el manu principal
     menu();
     return 0;
@@ -181,16 +182,15 @@ int juego(int nivel){
         //Limpiamos pantalla y mostramos el mapa y el estado del jugador
         system("color 0F");
         imprimirTablero(mapa, posJugador_fila, posJugador_columna);
-        printf("\n=========================================\n");
-        printf("  ESTADO DEL JUGADOR      [ Nivel %d ]\n", nivel);
-        printf("=========================================\n");
-        printf("  Movimientos (Pasos):  %d\n", pasos);
-        printf("  Monedas Recogidas:   %d / %d\n", monedasRecogidas, monedasTotales); 
-        printf("  Llaves en Inventario: %d\n", llaves);     
-        printf("  Celdas Exploradas:   %d\n", celdasLibres); 
-        printf("=========================================\n");
+        printf("========================================\n");
+        printf(" ESTADO DEL JUGADOR      [ Nivel %d ]\n", nivel);
+        printf("========================================\n");
+        printf(" Movimientos: %d  - Celdas libres: %d\n", pasos, celdasLibres);
+        printf(" Monedas recogidas: %d / %d\n", monedasRecogidas, monedasTotales); 
+        printf(" Llaves en el inventario: %d\n", llaves);     
+        printf("========================================\n");
         printf(" [W/A/S/D] Moverse  |  [Q] Salir al Menu\n");
-        printf("=========================================\n");
+        printf("========================================\n");
         movimiento = _getch(); 
 
         int nuevaPosFila = posJugador_fila;
